@@ -5,6 +5,15 @@
 //***********************SDAL TESTING***********************************
 //by Timothy Botelho
 
+//***********************Constructor**********************************
+TEST_CASE( "SDAL_Testing constructor", "[SDAL_constructor]" ) {
+	COP3530::SDAL<char> l;
+	l.push_front('X');
+	COP3530::SDAL<char>::iterator iter = l.begin();
+	COP3530::SDAL<char>::iterator iter2(iter);
+	REQUIRE(*iter2 == 'X');
+}
+//************************INSERT****************************************
 TEST_CASE("SDAL_Test insert", "[SDAL_insert]"){
 	COP3530::SDAL<char> l;
 	for (int i = 0; i < 60; i++) {
@@ -255,41 +264,32 @@ COP3530::SDAL<char> list;
 	}
 }
 
-// // //*************************ITERATOR TESTING*****************************
-// // TEST_CASE( "Iterating through elements", "[iteration]" ) {
-// // 	COP3530::SDAL<char> l;
-// // 	for (int i = 0; i < 60; i++) {
-// // 		l.push_front('X');
-// // 	}
-// // 	SECTION("Iterating through list, testing *, end, begin, = and preincrement operator"){
-// // 		l.push_front('A');
-// // 		COP3530::SDAL<char>::iterator iter = l.begin();
-// // 		REQUIRE(*iter == 'A');
-// // 		int count = 0;
-// // 		while (iter != l.end()) {
-// // 			++count;
-// // 			++iter;
-// // 		}
-// // 		REQUIRE(count == 61);
-// // 	}
-// //
-// // 	SECTION("Non equal and equality operators work, testing postincrement operator"){
-// // 			l.push_front('A');
-// // 			l.push_front('A');
-// // 			COP3530::SDAL<char>::iterator iter = l.begin();
-// // 			iter++;
-// // 			COP3530::SDAL<char>::iterator iter2 = l.begin();
-// // 			REQUIRE(iter != iter2);
-// // 			iter2++;
-// // 			REQUIRE(iter == iter2);
-// // 	}
-// // }
-//
-//
-// // TEST_CASE( "SDAL_Testing constructor", "[SDAL_constructor]" ) {
-// // 	COP3530::SDAL<char> l;
-// // 	l.push_front('X');
-// // 	//COP3530::SDAL<char>::iterator iter = l.begin();
-// // 	//COP3530::SDAL<char>::iterator iter2(iter);
-// // 	REQUIRE(*iter2 == 'X');
-// // }
+//*************************ITERATOR TESTING*****************************
+TEST_CASE( "SDAL_Iterator TESTING", "[iteration]" ) {
+	COP3530::SDAL<char> l;
+	for (int i = 0; i < 60; i++) {
+		l.push_front('X');
+	}
+	SECTION("Iterating through list, testing *, end, begin, = and preincrement operator"){
+		l.push_front('A');
+		COP3530::SDAL<char>::iterator iter = l.begin();
+		REQUIRE(*iter == 'A');
+		int count = 0;
+		while (iter != l.end()) {
+			++count;
+			++iter;
+		}
+		REQUIRE(count == 61);
+	}
+
+	SECTION("Non equal and equality operators work, testing postincrement operator"){
+			l.push_front('A');
+			l.push_front('A');
+			COP3530::SDAL<char>::iterator iter = l.begin();
+			iter++;
+			COP3530::SDAL<char>::iterator iter2 = l.begin();
+			REQUIRE(iter != iter2);
+			iter2++;
+			REQUIRE(iter == iter2);
+	}
+}

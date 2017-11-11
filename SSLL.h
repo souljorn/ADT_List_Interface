@@ -21,7 +21,7 @@ public:
     Linked_List_Iterator(const Linked_List_Iterator& c_iter):iter(c_iter.iter){}
     Linked_List_Iterator& operator=(Linked_List_Iterator it){ std::swap(iter, it.p); return *this;}
     Linked_List_Iterator&  operator++() {  iter = iter->next; return *this;}
-    Linked_List_Iterator& operator++(int) { Linked_List_Iterator it(*this); iter = iter->next; return it;}
+    Linked_List_Iterator operator++(int) { Linked_List_Iterator it(*this); iter = iter->next; return it;}
     bool operator==(const Linked_List_Iterator& it) { return iter == it.iter; }
     bool operator!=(const Linked_List_Iterator& it) { return iter != it.iter; }
     const T& operator*() const {Linked_List_Iterator it(*this); return it.iter->data; }
@@ -364,7 +364,6 @@ template <typename T>
 T SSLL<T>::peek_front()
 {   if(head == NULL){
     throw std::runtime_error("List is Empty");
-    return NULL;
     }
     return head->data;
 }

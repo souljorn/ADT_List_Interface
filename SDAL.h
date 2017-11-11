@@ -13,6 +13,34 @@
 using namespace std;
 
 namespace COP3530{
+
+//-----------------------SDAL_Iterator Class---------------------
+template <typename T>
+class SDAL_Iterator{
+public:
+  T * iter;
+
+  // type aliases required for C++ iterator compatibility
+  using difference_type = std::ptrdiff_t;
+  using value_type = T;
+  using reference = T&;
+  using pointer = T*;
+  using iterator_category = std::forward_iterator_tag;
+
+public:
+  SDAL_Iterator(T * it):iter(it){}
+  SDAL_Iterator(const SDAL_Iterator& c_iter):iter(c_iter.iter){}
+  SDAL_Iterator& operator=(SDAL_Iterator it){ std::swap(iter, it.p); return *this;}
+  SDAL_Iterator&  operator++() {  iter = iter + 1; return *this;}
+  SDAL_Iterator operator++(int) { SDAL_Iterator it(*this); iter = iter + 1; return it;}
+  bool operator==(const SDAL_Iterator& it) { return iter == it.iter; }
+  bool operator!=(const SDAL_Iterator& it) { return iter != it.iter; }
+  const T& operator*() const {SDAL_Iterator it(*this); return *(it.iter); }
+  //PSLL_Iterator& operator-(const difference_type& movement){PSLL_Iterator oldPtr = iter; iter-=movement;PSLL_Iterator temp(*this);iter = oldPtr;return temp;}
+  //difference_type operator-(const PSLL_Iterator& rawIterator){return std::distance(rawIterator.iter,iter);}
+
+};
+
 template<typename T>
 class SDAL:ADT_List<T>{
 
@@ -22,6 +50,7 @@ public:
     SDAL();
     SDAL(size_t size);
     ~SDAL() override;
+    friend class SDAL_Iterator<T>;
     void insert(T elem, size_t pos) override;
     void push_back(T elem) override;
     void push_front(T elem)override;
@@ -49,6 +78,33 @@ public:
     void resize_larger();
     void resize_smaller();
     void print_entire_array(std::ostream &stream);
+
+    //----iterator---------------
+    typedef SDAL_Iterator<T> iterator;
+    typedef SDAL_Iterator<T> const_iterator;
+
+    //---------------iterator functions----------------------
+    iterator begin()
+    {
+        return iterator(list);
+    }
+
+    const_iterator begin() const
+    {
+        return const_iterator(list);
+    }
+
+    iterator end()
+    {
+        return iterator(list + capacity_used);
+    }
+
+    const_iterator end() const
+    {
+        return const_iterator( list + capacity_used);
+    }
+
+
 private:
     //member variables
     T * list;
@@ -56,27 +112,7 @@ private:
     size_t capacity_used = 0;
 };
 
-//
-//int *secondArray = new int[secondSize]; // Create array
-////Initialize secondArray to 0
-//for(int i = 0; i < secondSize; i++) secondArray[i] = 0;
-////Then use your code
-//for(int j = 0; j < secondSize; ++j)
-//{
-//    secondArray[j] = firstArray[j]; // Set second array equal to first array
-//}
 
-
-//------------begin,  end,     , array to copy to
-//std::copy ( myints, myints+7, myvector.begin() );
-
-//---------------Goals
-//--50 slots for original base constructor
-//-If item is added to full array create an array 150% the size
-//-100 slots in original array but only 50% used bring array down to 75%
-//
-//-Check for edge cases on pop to resize to smaller
-//
 //---------constructor-----------------
 
 template<typename T>
@@ -180,17 +216,17 @@ T SDAL<T>::replace(T elem, size_t pos)
 
         T * curr = list;
         T * end = list + m_size;
-
+        T temp;
         while (curr != end) {
             if(*curr == pos){
 
-                T temp = *curr;
+                temp = *curr;
                 *curr = elem;
                 return temp;
             }
             curr++;
         }
-        return NULL;
+        return temp;
     }
 
 //----------------remove--------------**
@@ -272,7 +308,7 @@ bool SDAL<T>::is_empty()
 //---------------is_full---------------**
 template <typename T>
 bool SDAL<T>::is_full(){
-    if(length() == m_size)
+    if(length() == m_size-1)
     return true;
     return false;
 }
@@ -440,7 +476,7 @@ void SDAL<T>::print_entire_array(std::ostream &stream){
         stream << "<" << list[i]<< ">" ;
         stream << ", \n";
     }
+}
 
-}
-}
+}//namespace
 #endif /* SDAL_h */

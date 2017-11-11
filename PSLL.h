@@ -30,7 +30,7 @@ namespace COP3530{
     PSLL_Iterator(const PSLL_Iterator& c_iter):iter(c_iter.iter){}
     PSLL_Iterator& operator=(PSLL_Iterator it){ std::swap(iter, it.p); return *this;}
     PSLL_Iterator&  operator++() {  iter = iter->next; return *this;}
-    PSLL_Iterator& operator++(int) { PSLL_Iterator it(*this); iter = iter->next; return it;}
+    PSLL_Iterator operator++(int) { PSLL_Iterator it(*this); iter = iter->next; return it;}
     bool operator==(const PSLL_Iterator& it) { return iter == it.iter; }
     bool operator!=(const PSLL_Iterator& it) { return iter != it.iter; }
     const T& operator*() const {PSLL_Iterator it(*this); return it.iter->data; }
@@ -104,7 +104,6 @@ public:
     }
 
     difference_type distance(iterator first, iterator last){
-        cout << (last - first) << endl;
         return  (last - first)/4;
     }
 
@@ -316,7 +315,7 @@ T PSLL<T>::remove(size_t pos){
   }
   else if(length() == 1){
       temp = head->next->data;
-      //std::cout << head->data << std::endl;
+
       clear();
       return temp;
   }
@@ -363,8 +362,7 @@ T PSLL<T>::pop_back(){
     while (conductor->next != NULL) {
         back = conductor;
         conductor = conductor->next;
-        //std::cout<< "con"<< conductor->data << std::endl;
-        //std::cout <<"back"<< back->data << std::endl;
+
 
     }
 
@@ -564,23 +562,19 @@ template<typename T>
 T * PSLL<T>::contents(){
   T * arr = new T[length()];
 
-  PSLL<T>::iterator iter = begin();   //create a begin iterator
+  //PSLL<T>::iterator iter = begin();   //create a begin iterator
   PSLL<T>::iterator iter_end = end();     //create end iterator
 
   //iterator implementation using distance
-  for (iter; iter != iter_end; ++iter) {
+  for (auto iter = begin(); iter != iter_end; ++iter) {
         //need to use distance to get an index
         int i = distance(begin(), iter);
-        // cout << "data of begin" << begin().iter->data << endl;
+
         arr[i] = *iter;
-        // cout << "index: " << i << endl;
-        // cout << arr[i] << endl;
+
 }
 
-  // for(int i = 0; i < length(); i++){
-  //   arr[i] = item_at(i);
-  //   cout << arr[i] << endl;
-  // }
+
   return arr;
 }
 template<typename T>
@@ -633,7 +627,7 @@ size_t PSLL<T>::trim_pool(){
     if (length() > 100 && length_pool() >50) {
     int pool_trim = length_pool()-50;
         for(int i =0; i<pool_trim ;i++){
-        //cout << "trim"<< endl;
+        
             pool_pop_back();
         }
     }

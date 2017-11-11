@@ -6,16 +6,6 @@
 //  Copyright © 2017 Timothy Botelho. All rights reserved.
 //
 //
-//**************to do****************************
-//pop front
-//pop back
-//remove
-//replace
-//push back
-//insert
-//print
-//contains
-//shift all left(pos)
 
 #ifndef CDAL_h
 #define CDAL_h
@@ -25,6 +15,36 @@
 using namespace std;
 
 namespace COP3530{
+
+
+//-----------------------CDAL_Iterator Class---------------------
+template <typename T>
+class CDAL_Iterator{
+public:
+  T * iter;
+
+  // type aliases required for C++ iterator compatibility
+  using difference_type = std::ptrdiff_t;
+  using value_type = T;
+  using reference = T&;
+  using pointer = T*;
+  using iterator_category = std::forward_iterator_tag;
+
+public:
+  CDAL_Iterator(T * it):iter(it){}
+  CDAL_Iterator(const CDAL_Iterator& c_iter):iter(c_iter.iter){}
+  CDAL_Iterator& operator=(CDAL_Iterator it){ std::swap(iter, it.p); return *this;}
+  CDAL_Iterator&  operator++() {  iter = iter + 1; return *this;}
+  CDAL_Iterator operator++(int) { CDAL_Iterator it(*this); iter = iter + 1; return it;}
+  bool operator==(const CDAL_Iterator& it) { return iter == it.iter; }
+  bool operator!=(const CDAL_Iterator& it) { return iter != it.iter; }
+  const T& operator*() const {CDAL_Iterator it(*this); return *(it.iter); }
+  //PSLL_Iterator& operator-(const difference_type& movement){PSLL_Iterator oldPtr = iter; iter-=movement;PSLL_Iterator temp(*this);iter = oldPtr;return temp;}
+  //difference_type operator-(const PSLL_Iterator& rawIterator){return std::distance(rawIterator.iter,iter);}
+
+};
+
+
 template<typename T>
 class CDAL:ADT_List<T>{
 
@@ -33,6 +53,7 @@ public:
     //function declerations
     CDAL();
     ~CDAL() override;
+    friend class CDAL_Iterator<T>;
     void insert(T elem, size_t pos) override;
     void push_back(T elem) override;
     void push_front(T elem)override;
@@ -96,7 +117,7 @@ CDAL<T>::CDAL(){head = new(Node<T>),tail = new(Node<T>);
 //---------destructor-----------------
 template<typename T>
 CDAL<T>::~CDAL(){
-
+  clear();
 
 }
 
@@ -406,13 +427,13 @@ Node<T> * CDAL<T>::find_cur_node(int pos){
     }
     else{
         int find_curr = pos/50;
-        //cout << "find curr node" << endl;
+
         while (find_curr != 0) {
         temp = temp->next;
         find_curr--;
-            //cout << "while" << endl;
+
         }
-        //cout << temp << endl;
+
         return temp;
     }
 }
@@ -432,7 +453,7 @@ Node<T> * back = new  Node<T>;
     {
         back = front;
         front = front->next;
-        //cout << count++ << endl;
+
     }
     temp->prev = front;
     front->next = temp;
@@ -450,7 +471,7 @@ void CDAL<T>::remove_node(){
     {
         back = front;
         front = front->next;
-        cout << count++ << endl;
+
     }
     //delete front;
     back->next = NULL;
@@ -537,7 +558,7 @@ void CDAL<T>::shift_all_left(int pos){
     if(head->next->cur_arr_size == 1){
         head->next->is_empty = true;
         head->next->cur_arr_size--;
-        //cout << "head cur size =1" << endl;
+
         return;
     }
 
@@ -610,7 +631,7 @@ void CDAL<T>::shift_all_left(int pos){
     else if(find_cur_node(pos) == find_last_used_node()){
         shift_arr_left(back, pos);
         back->cur_arr_size--;
-        //cout << "item in last node" << endl;
+
         return;
     }
 
@@ -625,23 +646,23 @@ void CDAL<T>::shift_all_left(int pos){
                     shift_arr_left(front, pos);
                     first_to_last(front);
 
-                    //cout << "first if" << endl;
+
                 }
                 else{
                     shift_arr_left(front,0);
                     first_to_last(front);
-                    //cout << "else" << endl;
+
                 }
                 front = back;
                 back = back->next;
 
-                //cout << "while" << endl;
+
 
             }//while
             if(back == find_last_used_node()){
                 shift_arr_left(front,0);
                 first_to_last(front);
-                //shift_arr_left(back,0);
+
             }
 
             find_last_used_node()->cur_arr_size--;
@@ -674,7 +695,7 @@ void CDAL<T>::shift_all_left(int pos){
                 front = back;
                 back = back->next;
 
-                //cout << "2nd while" << endl;
+
 
             }//while
             if(back == find_last_used_node()){
@@ -709,7 +730,7 @@ void CDAL<T>::print_cur_node(Node<T> * curr)
     for (int i = 0; i <= size; i++) {
         cout << "arr[" << i << "] = " << *(ptr2+i) <<endl;
     }
-    //cout << "print add" << curr <<endl;
+
 }
 
 template<typename T>
@@ -1196,7 +1217,7 @@ void CDAL<T>::reverse_node_traversal()
     create_node();
     temp = tail->next;
     while (temp != head->next) {
-        //cout << "traversal add: " << temp <<endl;
+
         temp = temp->prev;
     }
 }

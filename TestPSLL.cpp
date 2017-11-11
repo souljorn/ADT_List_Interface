@@ -43,9 +43,9 @@ TEST_CASE( "PSLL_ITERATOR_TESTING", "[PSLL_ITERATOR]" ) {
 				l.push_front('X');
 			}
 			int dist;
-			COP3530::PSLL<char>::iterator iter = l.begin();
-			COP3530::PSLL<char>::iterator iter_end = l.end();
-			for(iter; iter != l.end(); ++iter){
+
+
+			for(auto iter = l.begin(); iter != l.end(); ++iter){
 				dist = distance(l.begin(),iter);
 			}
 			//since distance between 1 element is 0 and distance between 2 is 1
