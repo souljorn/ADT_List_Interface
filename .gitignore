@@ -1,0 +1,10 @@
+#ignore all object files
+*.o
+
+#ignore all .gch files
+*.h.gch
+
+#ignore class template file
+class_template_blank.h 
+main.cpp
+test.h
