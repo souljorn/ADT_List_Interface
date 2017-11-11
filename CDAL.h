@@ -357,20 +357,19 @@ for(int i = 0; i < length(); i++){
 //--------------print-----------------
 template <typename T>
 void CDAL<T>::print(std::ostream &stream){
-    //    Node<T> * conductor = new Node<T>();
-    //    conductor = head->next;
-    //    //size_t index = 0;
-    //    if (is_empty()) {
-    //        stream << "<empty list> \n ";
-    //    }
-    //    else if(!is_empty()){
-    //        while (conductor->next != NULL) {
-    //            stream << "<" << conductor->data << ">" ;
-    //            stream << ",";
-    //            conductor = conductor->next;
-    //        }
-    //        stream << "<" << conductor->data << ">"  << " \n";
-    //    }
+
+       if (is_empty()) {
+           stream << "<empty list> \n ";
+       }
+       else if(!is_empty()){
+         size_t it = 0;
+         size_t size = length()-1;
+           while (it != size) {
+               stream << "<" << item_at(it++) << ">" ;
+               stream << ",";
+           }
+           stream << "<" << item_at(it) << ">"  << " \n";
+       }
 }
 
 //--------------contents-------------
@@ -731,14 +730,7 @@ void CDAL<T>::test_shift()
 
 
     print_all_nodes();
-    //shift_all_left(length()-1);
-    //first_to_last(head->next);
-    //print_all_nodes();
-    //cout << peek_back() << endl;
-    //cout << peek_front() << endl;
-    //cout << item_at(120) << endl;
-    //clear();
-    //cout << length() << endl;
+
 
 }
 

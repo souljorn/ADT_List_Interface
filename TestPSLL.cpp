@@ -6,44 +6,63 @@
 //by Timothy Botelho
 
 
-// //*************************ITERATOR TESTING*****************************
-// TEST_CASE( "Iterating through elements", "[iteration]" ) {
-// 	COP3530::PSLL<char> l;
-// 	for (int i = 0; i < 60; i++) {
-// 		l.push_front('X');
-// 	}
-// 	SECTION("Iterating through list, testing *, end, begin, = and preincrement operator"){
-// 		l.push_front('A');
-// 		COP3530::PSLL<char>::iterator iter = l.begin();
-// 		REQUIRE(*iter == 'A');
-// 		int count = 0;
-// 		while (iter != l.end()) {
-// 			++count;
-// 			++iter;
-// 		}
-// 		REQUIRE(count == 61);
-// 	}
-//
-// 	SECTION("Non equal and equality operators work, testing postincrement operator"){
-// 			l.push_front('A');
-// 			l.push_front('A');
-// 			COP3530::PSLL<char>::iterator iter = l.begin();
-// 			iter++;
-// 			COP3530::PSLL<char>::iterator iter2 = l.begin();
-// 			REQUIRE(iter != iter2);
-// 			iter2++;
-// 			REQUIRE(iter == iter2);
-// 	}
-// }
+//*************************ITERATOR TESTING*****************************
+TEST_CASE( "PSLL_ITERATOR_TESTING", "[PSLL_ITERATOR]" ) {
+	COP3530::PSLL<char> l;
+	l.clear();
+	for (int i = 0; i < 60; i++) {
+		l.push_front('X');
+	}
+	SECTION("Iterating through list, testing *, end, begin, = and preincrement operator"){
+		l.push_front('A');
+		COP3530::PSLL<char>::iterator iter = l.begin();
+		REQUIRE(*iter == 'A');
+		int count = 0;
+		while (iter != l.end()) {
+			++count;
+			++iter;
+		}
+		REQUIRE(count == 61);
+	}
 
+	SECTION("Equality operators and testing postincrement"){
+			l.push_front('A');
+			l.push_front('A');
+			COP3530::PSLL<char>::iterator iter = l.begin();
+			iter++;
+			COP3530::PSLL<char>::iterator iter2 = l.begin();
+			REQUIRE(iter != iter2);
+			iter2++;
+			REQUIRE(iter == iter2);
+	}
 
-// TEST_CASE( "PSLL_Testing constructor", "[PSLL_constructor]" ) {
-// 	COP3530::PSLL<char> l;
-// 	l.push_front('X');
-// 	//COP3530::PSLL<char>::iterator iter = l.begin();
-// 	//COP3530::PSLL<char>::iterator iter2(iter);
-// 	REQUIRE(*iter2 == 'X');
-// }
+	SECTION("Test iterator distance"){
+			l.clear();
+
+			for (int i = 0; i < 60; i++) {
+				l.push_front('X');
+			}
+			int dist;
+			COP3530::PSLL<char>::iterator iter = l.begin();
+			COP3530::PSLL<char>::iterator iter_end = l.end();
+			for(iter; iter != l.end(); ++iter){
+				dist = distance(l.begin(),iter);
+			}
+			//since distance between 1 element is 0 and distance between 2 is 1
+			// so distance = n - 1
+			REQUIRE(dist == l.length() - 1);
+
+	}
+}
+
+//------------------Test constructor------------------------------
+TEST_CASE( "PSLL_Testing constructor", "[PSLL_constructor]" ) {
+	COP3530::PSLL<char> l;
+	l.push_front('X');
+	COP3530::PSLL<char>::iterator iter = l.begin();
+	COP3530::PSLL<char>::iterator iter2(iter);
+	REQUIRE(*iter2 == 'X');
+}
 
 TEST_CASE("PSLL_Test insert", "[PSLL_insert]"){
 	COP3530::PSLL<char> l;
@@ -371,5 +390,15 @@ COP3530::PSLL<char> list;
 		list.push_front('A');
 		REQUIRE(list.contains('A',equals_function) == true);
 	}
+}
 
+//***************PSLL CONTENTS************************
+TEST_CASE("PSLL_TEST CONTENTS", "[PSLL_CONTENTS]"){
+COP3530::PSLL<char> list;
+
+	SECTION("Test contents of 1 item"){
+		list.push_front('A');
+		auto r = list.contents();
+		REQUIRE(r[0] == 'A');
+	}
 }

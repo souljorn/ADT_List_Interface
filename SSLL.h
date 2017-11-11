@@ -464,16 +464,14 @@ T * SSLL<T>::contents(){
     size_t index = 0;
     while (conductor != NULL) {
         conductor = conductor->next;
-
         arr[index] = pop_back();
-    //std::cout << arr[index]<< std::endl;
-    //std::cout << arr[peek_back()]<< std::endl;
         index++;
     }
     arr[index] = pop_back();
 
     return arr;
 }
-}
+
+}//namespace
 
 #endif /* SSLL_h */

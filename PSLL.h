@@ -1,11 +1,10 @@
 
-//
-//  PSLL.h
-//  ADT_List
-//
-//  Created by Timothy Botelho on 9/14/17.
-//  Copyright © 2017 Timothy Botelho. All rights reserved.
-//
+/*
+Created by Timothy Botelho on 9/14/17.
+Copyright © 2017 Timothy Botelho. All rights reserved.
+Project 1 COP3530
+Instructor Dave Small
+*/
 
 #ifndef PSLL_h
 #define PSLL_h
@@ -13,6 +12,33 @@
 using namespace std;
 
 namespace COP3530{
+//-----------------------PSLL_Iterator Class---------------------
+  template <typename T>
+  class PSLL_Iterator{
+  public:
+    Node<T> * iter;
+
+    // type aliases required for C++ iterator compatibility
+    using difference_type = std::ptrdiff_t;
+    using value_type = T;
+    using reference = T&;
+    using pointer = T*;
+    using iterator_category = std::forward_iterator_tag;
+
+  public:
+    PSLL_Iterator(Node<T>* it):iter(it){}
+    PSLL_Iterator(const PSLL_Iterator& c_iter):iter(c_iter.iter){}
+    PSLL_Iterator& operator=(PSLL_Iterator it){ std::swap(iter, it.p); return *this;}
+    PSLL_Iterator&  operator++() {  iter = iter->next; return *this;}
+    PSLL_Iterator& operator++(int) { PSLL_Iterator it(*this); iter = iter->next; return it;}
+    bool operator==(const PSLL_Iterator& it) { return iter == it.iter; }
+    bool operator!=(const PSLL_Iterator& it) { return iter != it.iter; }
+    const T& operator*() const {PSLL_Iterator it(*this); return it.iter->data; }
+    PSLL_Iterator& operator-(const difference_type& movement){PSLL_Iterator oldPtr = iter; iter-=movement;PSLL_Iterator temp(*this);iter = oldPtr;return temp;}
+    difference_type operator-(const PSLL_Iterator& rawIterator){return std::distance(rawIterator.iter,iter);}
+
+  };
+
 template<typename T>
 class PSLL:ADT_List<T>{
 
@@ -21,6 +47,7 @@ public:
     //function declerations
     PSLL();
     ~PSLL() override;
+    friend class PSLL_Iterator<T>;
     void insert(T elem, size_t pos) override;
     void push_back(T elem) override;
     void push_front(T elem)override;
@@ -45,6 +72,42 @@ public:
     void find_tail();
     size_t trim_pool();
     void push_pool(Node<T> * node);
+
+    /*----in-class iterator functions---------------
+    functions to allow PSSL_Iterator to function as
+    an iterator with in PSLL
+    */
+
+    //typedefs to allow iterators to works with c++ std functions
+    typedef PSLL_Iterator<T> iterator;
+    typedef PSLL_Iterator<T> const_iterator;
+    using difference_type = std::ptrdiff_t;
+
+    iterator begin()
+    {
+        return iterator(head->next);
+    }
+
+    const_iterator begin() const
+    {
+        return const_iterator(head->next);
+    }
+
+    iterator end()
+    {
+        return iterator(NULL);
+    }
+
+    const_iterator end() const
+    {
+        return const_iterator(NULL);
+    }
+
+    difference_type distance(iterator first, iterator last){
+        cout << (last - first) << endl;
+        return  (last - first)/4;
+    }
+
 
     //member variables
     Node<T> * head;
@@ -81,9 +144,6 @@ void PSLL<T>::insert(T elem, size_t pos){
     temp->data = elem;
     size_t index=0;
     conductor = free_pool;
-
-
-
 
     if (pos > length() || pos < 0 ) {
         throw std::runtime_error("Out of range");
@@ -204,8 +264,8 @@ template<typename T>
 void PSLL<T>::push_front(T elem){
     insert(elem, 0);
 }
-//-------------replace----------------
 
+//-------------replace----------------
 template<typename T>
 T PSLL<T>::replace(T elem, size_t pos)
 {
@@ -328,15 +388,12 @@ T PSLL<T>::pop_back(){
     return temp;
 }
 
-
-
 //-----------------pop_front-----------
 template<typename T>
 T PSLL<T>::pop_front(){
     Node<T> * conductor =new Node<T>();
     Node<T> * back = new Node<T>();
     T temp;
-
 
     if(is_empty()) {
         throw std::runtime_error("list is empty");
@@ -359,7 +416,6 @@ T PSLL<T>::item_at(size_t pos){
     Node<T> * back = new Node<T>();
     conductor = head->next;
 
-
     size_t size = 0;
     if(is_empty())
     throw std::runtime_error("list is empty");
@@ -373,6 +429,7 @@ T PSLL<T>::item_at(size_t pos){
     }
     return  conductor->data;
 }
+
 //-----------------peek_back-----------
 template<typename T>
 T PSLL<T>::peek_back(){
@@ -380,6 +437,7 @@ T PSLL<T>::peek_back(){
 
     return tail->next->data;
 }
+
 //----------------peek_front-----------
 template <typename T>
 T PSLL<T>::peek_front()
@@ -468,7 +526,6 @@ void PSLL<T>::clear(){
   head->next = NULL;
 }
 
-
 //-------------contains-------------
 template <typename T>
 bool PSLL<T>::contains(T elem,  bool equals_function(T &a, T &b)) {
@@ -505,9 +562,26 @@ void PSLL<T>::print(std::ostream &stream){
 //--------------contents-------------
 template<typename T>
 T * PSLL<T>::contents(){
+  T * arr = new T[length()];
 
+  PSLL<T>::iterator iter = begin();   //create a begin iterator
+  PSLL<T>::iterator iter_end = end();     //create end iterator
 
-    return NULL;
+  //iterator implementation using distance
+  for (iter; iter != iter_end; ++iter) {
+        //need to use distance to get an index
+        int i = distance(begin(), iter);
+        // cout << "data of begin" << begin().iter->data << endl;
+        arr[i] = *iter;
+        // cout << "index: " << i << endl;
+        // cout << arr[i] << endl;
+}
+
+  // for(int i = 0; i < length(); i++){
+  //   arr[i] = item_at(i);
+  //   cout << arr[i] << endl;
+  // }
+  return arr;
 }
 template<typename T>
 void PSLL<T>::create_pool(int num){
@@ -552,6 +626,7 @@ Node<T> * PSLL<T>::pool_pop_back(){
         return conductor;
     }
 }
+
 //---------------------trim_pool------------
 template <typename T>
 size_t PSLL<T>::trim_pool(){
@@ -574,5 +649,6 @@ void PSLL<T>::push_pool(Node<T> * node){
     conductor = free_pool_tail->next;
     conductor->next= node;
 }
-}
+
+}//namespace
 #endif /* PSLL_h */

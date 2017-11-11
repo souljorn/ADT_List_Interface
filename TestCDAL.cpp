@@ -268,6 +268,22 @@ COP3530::CDAL<char> list;
 		REQUIRE(list.contains('A',equals_function) == true);
 	}
 }
+//***************CDAL PRINT/CONTENTS************************
+TEST_CASE("CDAL_TEST PRINT", "[CDAL_PRINT]"){
+COP3530::CDAL<char> list;
+
+	SECTION("Test Print of 20 items"){
+		for(int i = 37; i < 57; i++){
+		list.push_front((char)i);
+		}
+
+		char * arr = list.contents();
+		//list.print(std::cout);
+		REQUIRE(list.length() == 20);
+		REQUIRE(list.peek_front() == (char)56);
+		REQUIRE(list.peek_back() == (char)37);
+	}
+}
 
 // // //*************************ITERATOR TESTING*****************************
 // // TEST_CASE( "Iterating through elements", "[iteration]" ) {
