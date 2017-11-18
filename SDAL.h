@@ -1,6 +1,6 @@
 //
 //  SDAL.h
-//  ADT_List
+//  List
 //
 //  Created by Timothy Botelho on 9/20/17.
 //  Copyright © 2017 Timothy Botelho. All rights reserved.
@@ -8,11 +8,11 @@
 
 #ifndef SDAL_h
 #define SDAL_h
-#include "ADT_List.h"
+#include "List.h"
 
 using namespace std;
 
-namespace COP3530{
+namespace cop3530{
 
 //-----------------------SDAL_Iterator Class---------------------
 template <typename T>
@@ -42,7 +42,7 @@ public:
 };
 
 template<typename T>
-class SDAL:ADT_List<T>{
+class SDAL: public List<T>{
 
     //---------Single Dynamic Array-Based List-------------
 public:
@@ -65,7 +65,7 @@ public:
     bool is_full()override;
     size_t length()override;
     void clear()override;
-    bool contains(T elem,  bool equals_function(T &a, T &b))override;
+    bool contains(T elem,  bool equals_function(const T &a,const T &b))override;
     void print (std::ostream &stream)override;
     T * contents()override;
     size_t size();
@@ -345,7 +345,7 @@ size_t SDAL<T>::size() {
 
 //-------------contains-------------
 template <typename T>
-bool SDAL<T>::contains(T elem,  bool equals_function(T &a, T &b)) {
+bool SDAL<T>::contains(T elem,  bool equals_function(const T &a,const T &b)) {
     T * curr =list;
     T * end = list + m_size;
 

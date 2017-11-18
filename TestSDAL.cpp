@@ -7,15 +7,15 @@
 
 //***********************Constructor**********************************
 TEST_CASE( "SDAL_Testing constructor", "[SDAL_constructor]" ) {
-	COP3530::SDAL<char> l;
+	cop3530::SDAL<char> l;
 	l.push_front('X');
-	COP3530::SDAL<char>::iterator iter = l.begin();
-	COP3530::SDAL<char>::iterator iter2(iter);
+	cop3530::SDAL<char>::iterator iter = l.begin();
+	cop3530::SDAL<char>::iterator iter2(iter);
 	REQUIRE(*iter2 == 'X');
 }
 //************************INSERT****************************************
 TEST_CASE("SDAL_Test insert", "[SDAL_insert]"){
-	COP3530::SDAL<char> l;
+	cop3530::SDAL<char> l;
 	for (int i = 0; i < 60; i++) {
 		l.push_front('X');
 	}
@@ -48,7 +48,7 @@ TEST_CASE("SDAL_Test insert", "[SDAL_insert]"){
 
 //************************PUSH FRONT TESTING*********************************
 TEST_CASE("SDAL_Test push_front", "[SDAL_push_front]"){
-	COP3530::SDAL<int> list;
+	cop3530::SDAL<int> list;
 
 	SECTION("Push Front When Empty"){
 			list.push_front(77);
@@ -66,7 +66,7 @@ TEST_CASE("SDAL_Test push_front", "[SDAL_push_front]"){
 
 //***********************TEST LENGTH******************************************
 TEST_CASE("SDAL_Test length", "[SDAL_length]"){
-	COP3530::SDAL<int> list;
+	cop3530::SDAL<int> list;
 	list.clear();
 
 	SECTION("Length when empty"){
@@ -85,7 +85,7 @@ TEST_CASE("SDAL_Test length", "[SDAL_length]"){
 
 //***********************TEST CLEAR******************************************
 TEST_CASE("SDAL_Test Clear", "[SDAL_length]"){
-	COP3530::SDAL<int> list;
+	cop3530::SDAL<int> list;
 	for(int i = 0 ; i < 5; i++)
 	{
 		list.push_front(i);
@@ -100,7 +100,7 @@ TEST_CASE("SDAL_Test Clear", "[SDAL_length]"){
 
 // //***********************TEST PUSH BACK******************************************
 TEST_CASE("SDAL_Test PUSH BACK", "[SDAL_push_back]"){
-	COP3530::SDAL<int> list;
+	cop3530::SDAL<int> list;
 
 	SECTION("When Empty"){
 			list.push_back(7);
@@ -121,7 +121,7 @@ TEST_CASE("SDAL_Test PUSH BACK", "[SDAL_push_back]"){
 
 //***********************TEST REPLACE******************************************
 TEST_CASE("SDAL_Test REPLACE", "[SDAL_replace]"){
-	COP3530::SDAL<int> list;
+	cop3530::SDAL<int> list;
 
 	SECTION("Replacing item when list is empty"){
 		bool caught = false;
@@ -161,7 +161,7 @@ TEST_CASE("SDAL_Test REPLACE", "[SDAL_replace]"){
 
 //********************REMOVE*****************************
 TEST_CASE("SDAL_TEST REMOVE", "[SDAL_REMOVE]"){
-		COP3530::SDAL<int> list;
+		cop3530::SDAL<int> list;
 
 	SECTION("Remove an item from an empty list"){
 		list.clear();
@@ -221,7 +221,7 @@ TEST_CASE("SDAL_TEST REMOVE", "[SDAL_REMOVE]"){
 
 //*********************POP_BACK********************
 TEST_CASE("SDAL_TEST POP_BACK", "[SDAL_pop_back]"){
-		COP3530::SDAL<int> list;
+		cop3530::SDAL<int> list;
 
 		SECTION("POP_BACK when list is empty"){
 			bool error = false;
@@ -256,7 +256,7 @@ bool equals_function(T &a, T &b){
 
 //***************SDAL CONTAINS************************
 TEST_CASE("SDAL_TEST CONTAINS", "[SDAL_CONTAINS]"){
-COP3530::SDAL<char> list;
+cop3530::SDAL<char> list;
 
 	SECTION("Testing Contains finds A"){
 		list.push_front('A');
@@ -266,13 +266,13 @@ COP3530::SDAL<char> list;
 
 //*************************ITERATOR TESTING*****************************
 TEST_CASE( "SDAL_Iterator TESTING", "[iteration]" ) {
-	COP3530::SDAL<char> l;
+	cop3530::SDAL<char> l;
 	for (int i = 0; i < 60; i++) {
 		l.push_front('X');
 	}
 	SECTION("Iterating through list, testing *, end, begin, = and preincrement operator"){
 		l.push_front('A');
-		COP3530::SDAL<char>::iterator iter = l.begin();
+		cop3530::SDAL<char>::iterator iter = l.begin();
 		REQUIRE(*iter == 'A');
 		int count = 0;
 		while (iter != l.end()) {
@@ -285,11 +285,19 @@ TEST_CASE( "SDAL_Iterator TESTING", "[iteration]" ) {
 	SECTION("Non equal and equality operators work, testing postincrement operator"){
 			l.push_front('A');
 			l.push_front('A');
-			COP3530::SDAL<char>::iterator iter = l.begin();
+			cop3530::SDAL<char>::iterator iter = l.begin();
 			iter++;
-			COP3530::SDAL<char>::iterator iter2 = l.begin();
+			cop3530::SDAL<char>::iterator iter2 = l.begin();
 			REQUIRE(iter != iter2);
 			iter2++;
 			REQUIRE(iter == iter2);
+	}
+	SECTION("Range based for loop"){
+		int size = 0;
+		for(auto it = l.begin(); it != l.end(); ++it)
+		{
+			size++;
+		}
+		REQUIRE(size == 60);
 	}
 }

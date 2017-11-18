@@ -2,19 +2,63 @@
 #include "SSLL.h"
 #include <stdexcept>
 
+using namespace std;
 //***********************SSLL TESTING***********************************
 //by Timothy Botelho
+
+//***********************SSLL COPY CONSTRUCTOR TESTING*****************
+
+TEST_CASE( "SSLL_COPY CONSTRUCTOR", "[SSLL_copy_constructor]" ) {
+	cop3530::SSLL<char> l;
+	l.push_front('A');
+	l.push_front('B');
+	l.push_front('C');
+
+	SECTION("Testing copy constructor with 3 elements"){
+	cop3530::SSLL<char> l_copy(l);
+	// cout <<"head add"<< l_copy.head << endl;
+	// cout <<"tail add"<< l_copy.tail << endl;
+	// cout <<"B add"<< l_copy.head->next << endl;
+	// cout <<"C add"<< l_copy.head->next->next << endl;
+	REQUIRE(l_copy.length() == 3);
+	REQUIRE(l_copy.peek_front() == 'C');
+	REQUIRE(l_copy.peek_back() == 'A');
+	REQUIRE(l_copy.pop_back() == 'A');
+	REQUIRE(l_copy.pop_back() == 'B');
+	REQUIRE(l_copy.pop_back() == 'C');
+	}
+}
+
+//*************************Copy assignment operator*********************
+TEST_CASE( "SSLL_COPY_ASSIGNMENT", "[SSLL_copy_assignment]" ) {
+	cop3530::SSLL<char> l;
+	l.push_front('A');
+	l.push_front('B');
+	l.push_front('C');
+
+	SECTION("Testing copy constructor with 3 elements"){
+	cop3530::SSLL<char> l_copy;
+	l_copy = l;
+
+	REQUIRE(l_copy.length() == 3);
+	REQUIRE(l_copy.peek_front() == 'C');
+	REQUIRE(l_copy.peek_back() == 'A');
+	REQUIRE(l_copy.pop_back() == 'A');
+	REQUIRE(l_copy.pop_back() == 'B');
+	REQUIRE(l_copy.pop_back() == 'C');
+	}
+}
 
 
 //*************************ITERATOR TESTING*****************************
 TEST_CASE( "Iterating through elements", "[iteration]" ) {
-	COP3530::SSLL<char> l;
+	cop3530::SSLL<char> l;
 	for (int i = 0; i < 60; i++) {
 		l.push_front('X');
 	}
 	SECTION("Iterating through list, testing *, end, begin, = and preincrement operator"){
 		l.push_front('A');
-		COP3530::SSLL<char>::iterator iter = l.begin();
+		cop3530::SSLL<char>::iterator iter = l.begin();
 		REQUIRE(*iter == 'A');
 		int count = 0;
 		while (iter != l.end()) {
@@ -27,9 +71,9 @@ TEST_CASE( "Iterating through elements", "[iteration]" ) {
 	SECTION("Non equal and equality operators work, testing postincrement operator"){
 			l.push_front('A');
 			l.push_front('A');
-			COP3530::SSLL<char>::iterator iter = l.begin();
+			cop3530::SSLL<char>::iterator iter = l.begin();
 			iter++;
-			COP3530::SSLL<char>::iterator iter2 = l.begin();
+			cop3530::SSLL<char>::iterator iter2 = l.begin();
 			REQUIRE(iter != iter2);
 			iter2++;
 			REQUIRE(iter == iter2);
@@ -38,15 +82,15 @@ TEST_CASE( "Iterating through elements", "[iteration]" ) {
 
 
 TEST_CASE( "SSLL_Testing constructor", "[SSLL_constructor]" ) {
-	COP3530::SSLL<char> l;
+	cop3530::SSLL<char> l;
 	l.push_front('X');
-	COP3530::SSLL<char>::iterator iter = l.begin();
-	COP3530::SSLL<char>::iterator iter2(iter);
+	cop3530::SSLL<char>::iterator iter = l.begin();
+	cop3530::SSLL<char>::iterator iter2(iter);
 	REQUIRE(*iter2 == 'X');
 }
 
 TEST_CASE("SSLL_Test insert", "[SSLL_insert]"){
-	COP3530::SSLL<char> l;
+	cop3530::SSLL<char> l;
 	for (int i = 0; i < 60; i++) {
 		l.push_front('X');
 	}
@@ -72,9 +116,29 @@ TEST_CASE("SSLL_Test insert", "[SSLL_insert]"){
 	}
 }
 
+//*********************Test Insert********************************
+TEST_CASE("SSLL_Test INSERT", "[SSLL_insert]"){
+	cop3530::SSLL<char> list;
+
+	SECTION("SSLL_Test inset at 0, [SSLL_insert]"){
+		list.insert('A',0);
+		REQUIRE(list.peek_front() == 'A');
+		REQUIRE(list.length() == 1);
+	}
+	SECTION("SSLL_Test inset at 1 with length 1, [SSLL_insert]"){
+		list.insert('A',0);
+		list.insert('B',1);
+		REQUIRE(list.peek_back() == 'B');
+
+	}
+
+
+
+}
+
 //************************PUSH FRONT TESTING*********************************
 TEST_CASE("SSLL_Test push_front", "[SSLL_push_front]"){
-	COP3530::SSLL<int> list;
+	cop3530::SSLL<int> list;
 
 	SECTION("Push Front When Empty"){
 			list.push_front(77);
@@ -92,7 +156,7 @@ TEST_CASE("SSLL_Test push_front", "[SSLL_push_front]"){
 
 //***********************TEST LENGTH******************************************
 TEST_CASE("SSLL_Test length", "[SSLL_length]"){
-	COP3530::SSLL<int> list;
+	cop3530::SSLL<int> list;
 	list.clear();
 	SECTION("Length when empty"){
 
@@ -110,7 +174,7 @@ TEST_CASE("SSLL_Test length", "[SSLL_length]"){
 
 //***********************TEST CLEAR******************************************
 TEST_CASE("SSLL_Test Clear", "[SSLL_length]"){
-	COP3530::SSLL<int> list;
+	cop3530::SSLL<int> list;
 	for(int i = 0 ; i < 5; i++)
 	{
 		list.push_front(i);
@@ -125,7 +189,7 @@ TEST_CASE("SSLL_Test Clear", "[SSLL_length]"){
 
 //***********************TEST PUSH BACK******************************************
 TEST_CASE("SSLL_Test PUSH BACK", "[SSLL_push_back]"){
-	COP3530::SSLL<int> list;
+	cop3530::SSLL<int> list;
 
 	SECTION("When Empty"){
 			list.push_back(7);
@@ -146,7 +210,7 @@ TEST_CASE("SSLL_Test PUSH BACK", "[SSLL_push_back]"){
 
 //***********************TEST REPLACE******************************************
 TEST_CASE("SSLL_Test REPLACE", "[SSLL_replace]"){
-	COP3530::SSLL<int> list;
+	cop3530::SSLL<int> list;
 
 	SECTION("Replacing item when list is empty"){
 		bool caught = false;
@@ -186,7 +250,7 @@ TEST_CASE("SSLL_Test REPLACE", "[SSLL_replace]"){
 
 //********************SSLL REMOVE*****************************
 TEST_CASE("SSLL_TEST REMOVE", "[SSLL_REMOVE]"){
-		COP3530::SSLL<int> list;
+		cop3530::SSLL<int> list;
 
 	SECTION("Remove an item from an empty list"){
 		list.clear();
@@ -231,7 +295,7 @@ TEST_CASE("SSLL_TEST REMOVE", "[SSLL_REMOVE]"){
 
 //*********************SSLL POP_BACK********************
 TEST_CASE("SSLL_TEST POP_BACK", "[SSLL_pop_back]"){
-		COP3530::SSLL<int> list;
+		cop3530::SSLL<int> list;
 
 		SECTION("POP_BACK when list is empty"){
 			bool error = false;
@@ -258,7 +322,7 @@ TEST_CASE("SSLL_TEST POP_BACK", "[SSLL_pop_back]"){
 
 //*********************SSLL POP_FRONT********************
 TEST_CASE("SSLL_TEST POP_FRONT", "[SSLL_pop_front]"){
-		COP3530::SSLL<int> list;
+		cop3530::SSLL<int> list;
 
 		SECTION("POP_FRONT when list is empty"){
 			bool error = false;
@@ -293,7 +357,7 @@ TEST_CASE("SSLL_TEST POP_FRONT", "[SSLL_pop_front]"){
 
 //*********************SSLL ITEM_AT********************
 TEST_CASE("SSLL_TEST ITEM_AT", "[SSLL_item_at]"){
-		COP3530::SSLL<int> list;
+		cop3530::SSLL<int> list;
 
 		SECTION("item_at when list is empty"){
 			bool error = false;
@@ -348,7 +412,7 @@ bool equals_function(T &a, T &b){
 }
 //***************SSLL CONTAINS************************
 TEST_CASE("SSLL_TEST CONTAINS", "[SSLL_CONTAINS]"){
-COP3530::SSLL<char> list;
+cop3530::SSLL<char> list;
 
 
 	SECTION("Testing Contains finds A"){
@@ -362,14 +426,14 @@ COP3530::SSLL<char> list;
 //***************SSLL CONTENTS************************
 //***************SSLL CONTENTS************************
 // TEST_CASE( "SSLL_Testing arrow operator", "[SSLL_arrow_operator]" ) {
-// 	COP3530::SSLL<Employee> l;
+// 	cop3530::SSLL<Employee> l;
 // 	Employee emp;
 // 	l.push_front(emp);
-// 	COP3530::SSLL<Employee>::iterator iter = l.begin();
+// 	cop3530::SSLL<Employee>::iterator iter = l.begin();
 // 	REQUIRE(iter->data->salary == 0);
 //
 // 	SECTION("Throws exception when trying to use with a null node") {
-// 		COP3530::SSLL<Employee>::iterator iter2;
+// 		cop3530::SSLL<Employee>::iterator iter2;
 // 		bool caught = false;
 // 		try {
 // 			iter2->data->salary;

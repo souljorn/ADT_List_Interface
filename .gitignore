@@ -9,3 +9,13 @@ class_template_blank.h
 main.cpp
 test.h
 tests
+test1
+test2
+test3
+test4
+main.dSYM
+test4.dSYM
+tests.dSYM
+main
+log.txt
+errors.txt

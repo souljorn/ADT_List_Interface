@@ -1,17 +1,24 @@
 //
 //  SSLL.h
-//  ADT_List
+//  List
 //
 //  Created by Timothy Botelho on 9/12/17.
 //  Copyright © 2017 Timothy Botelho. All rights reserved.
 //
 
+/*
+copy constructor,
+copy-assignment operator,
+move constructor,
+move-assignment operator, &
+destructor
+*/
+
 #ifndef SSLL_h
 #define SSLL_h
-#include "ADT_List.h"
+#include "List.h"
 
-namespace COP3530{
-
+namespace cop3530{
 
 template <typename T>
 class Linked_List_Iterator{
@@ -29,11 +36,20 @@ public:
 
 
 template<typename T>
-class SSLL:ADT_List<T>{
+class SSLL: public List<T>{
 
 public:
 
     SSLL();
+    SSLL(const SSLL &copy);
+    //------copy assignment operator------
+    SSLL& operator =(SSLL<T> & rhs){
+    std::swap(rhs.head, head);
+    std::swap(rhs.tail, tail);
+    std::swap(rhs.max_nodes, max_nodes);
+    return *this;
+    }
+
     ~SSLL() override;
     friend class Linked_List_Iterator<T>;
     void insert(T elem, size_t pos) override;
@@ -50,7 +66,7 @@ public:
     bool is_full()override;
     size_t length()override;
     void clear()override;
-    bool contains(T elem,  bool equals_function(T &a, T &b))override;
+    bool contains(T elem,  bool equals_function(const T &a, const T &b))override;
     void print (std::ostream &stream)override;
     T * contents()override;
 
@@ -81,7 +97,7 @@ public:
     //---members---
     Node<T> * head;
     Node<T> * tail;
-    size_t max_nodes =100;
+    size_t max_nodes = 10000;
 };
 
 //---------constructor-----------------
@@ -91,6 +107,42 @@ SSLL<T>::SSLL()
 {head = new(Node<T>),tail = new(Node<T>);
     head = NULL;
     tail = NULL;
+}
+
+//---------copy constructor-----------
+template<typename T>
+SSLL<T>::SSLL(const SSLL &copy){
+Node<T> * cur = new Node<T>;
+Node<T> * next = new Node<T>;
+
+if(copy.head == NULL )
+{
+  head = NULL;
+  tail = NULL;
+}
+
+//create new head
+head = new Node<T>;
+head->data = copy.head->data;
+head->next = cur;
+
+cur = head;
+//next will crawl along old list
+next = copy.head->next;
+
+  while(next){
+    //create new next Node
+    cur->next = new Node<T>;
+    //move cur to next node
+    cur = cur->next;
+    //copy data from old list
+    cur->data = next->data;
+    //iterate old list
+    next = next->next;
+  }
+  tail = new Node<T>;
+  cur->next = NULL;
+  tail = cur;
 }
 
 //---------destructor-----------------
@@ -120,6 +172,10 @@ void SSLL<T>::insert(T elem, size_t pos){
         head = temp;
         temp->next = NULL;
         tail = temp;
+    }
+    else if(pos== length())
+    {
+      push_back(elem);
     }
     else if(pos==0 && !is_empty())
     {
@@ -230,7 +286,6 @@ T SSLL<T>::remove(size_t pos){
     T temp;
     size_t index =0;
 
-
     if (pos>length()) {
         throw std::runtime_error("Out of range");
     }
@@ -289,8 +344,10 @@ T SSLL<T>::pop_back(){
 
     }
     if (conductor == head) {    //if popping last element then set head to Null
-        head =NULL;
-        tail =NULL;
+        T temp = head->data;
+        head = NULL;
+        tail = NULL;
+        return temp;
     }
     //if (head == NULL)
     //throw std::runtime_error("List is empty");
@@ -421,12 +478,13 @@ void SSLL<T>::clear(){
 
 //-------------contains-------------
 template <typename T>
-bool SSLL<T>::contains(T elem, bool equals_function(T &a, T &b)){
+bool SSLL<T>::contains(T elem, bool equals_function(const T &a, const T &b)){
     Node<T> * conductor = new Node<T>();
     conductor = head;
     bool equal = false;
     while(conductor){
-     if(equals_function(elem,conductor->data) == true)
+      T temp = conductor->data;
+     if(equals_function(elem,temp) == true)
      return true;
       conductor = conductor->next;
     }

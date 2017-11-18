@@ -4,9 +4,9 @@
 
 //***********************CDAL TESTING***********************************
 //by Timothy Botelho
-
+//
 TEST_CASE("CDAL_Test insert", "[CDAL_insert]"){
-	COP3530::CDAL<char> l;
+	cop3530::CDAL<char> l;
 	for (int i = 0; i < 60; i++) {
 		l.push_front('X');
 	}
@@ -39,7 +39,7 @@ TEST_CASE("CDAL_Test insert", "[CDAL_insert]"){
 
 //************************PUSH FRONT TESTING*********************************
 TEST_CASE("CDAL_Test push_front", "[CDAL_push_front]"){
-	COP3530::CDAL<int> list;
+	cop3530::CDAL<int> list;
 
 	SECTION("Push Front When Empty"){
 			list.push_front(77);
@@ -57,7 +57,7 @@ TEST_CASE("CDAL_Test push_front", "[CDAL_push_front]"){
 
 //***********************TEST LENGTH******************************************
 TEST_CASE("CDAL_Test length", "[CDAL_length]"){
-	COP3530::CDAL<int> list;
+	cop3530::CDAL<int> list;
 	list.clear();
 
 	SECTION("Length when empty"){
@@ -76,7 +76,7 @@ TEST_CASE("CDAL_Test length", "[CDAL_length]"){
 
 //***********************TEST CLEAR******************************************
 TEST_CASE("CDAL_Test Clear", "[CDAL_length]"){
-	COP3530::CDAL<int> list;
+	cop3530::CDAL<int> list;
 	for(int i = 0 ; i < 5; i++)
 	{
 		list.push_front(i);
@@ -91,7 +91,7 @@ TEST_CASE("CDAL_Test Clear", "[CDAL_length]"){
 
 // //***********************TEST PUSH BACK******************************************
 TEST_CASE("CDAL_Test PUSH BACK", "[CDAL_push_back]"){
-	COP3530::CDAL<int> list;
+	cop3530::CDAL<int> list;
 
 	SECTION("When Empty"){
 			list.push_back(7);
@@ -123,7 +123,7 @@ TEST_CASE("CDAL_Test PUSH BACK", "[CDAL_push_back]"){
 
 //***********************TEST REPLACE******************************************
 TEST_CASE("CDAL_Test REPLACE", "[CDAL_replace]"){
-	COP3530::CDAL<int> list;
+	cop3530::CDAL<int> list;
 
 	SECTION("Replacing item when list is empty"){
 		bool caught = false;
@@ -163,7 +163,7 @@ TEST_CASE("CDAL_Test REPLACE", "[CDAL_replace]"){
 
 //********************REMOVE*****************************
 TEST_CASE("CDAL_TEST REMOVE", "[CDAL_REMOVE]"){
-		COP3530::CDAL<int> list;
+		cop3530::CDAL<int> list;
 
 	SECTION("Remove an item from an empty list"){
 		list.clear();
@@ -226,7 +226,7 @@ TEST_CASE("CDAL_TEST REMOVE", "[CDAL_REMOVE]"){
 
 //*********************POP_BACK********************
 TEST_CASE("CDAL_TEST POP_BACK", "[CDAL_pop_back]"){
-		COP3530::CDAL<int> list;
+		cop3530::CDAL<int> list;
 
 		SECTION("POP_BACK when list is empty"){
 			bool error = false;
@@ -240,13 +240,13 @@ TEST_CASE("CDAL_TEST POP_BACK", "[CDAL_pop_back]"){
 		}
 
 		SECTION("POP_BACK when their are 15 items"){
-			bool error = false;
-			for(int i = 79 ; i >= 0; i--)
+			list.clear();
+			for(int i = 55 ; i > 0; i--)
 			{
 				list.push_front(i);
 			}
+			REQUIRE(list.pop_back() == 55);
 
-			REQUIRE(list.pop_back() == 79);
 		}
 
 }
@@ -261,7 +261,7 @@ bool equals_function(T &a, T &b){
 
 //***************CDAL CONTAINS************************
 TEST_CASE("CDAL_TEST CONTAINS", "[CDAL_CONTAINS]"){
-COP3530::CDAL<char> list;
+cop3530::CDAL<char> list;
 
 	SECTION("Testing Contains finds A"){
 		list.push_front('A');
@@ -270,7 +270,7 @@ COP3530::CDAL<char> list;
 }
 //***************CDAL PRINT/CONTENTS************************
 TEST_CASE("CDAL_TEST PRINT", "[CDAL_PRINT]"){
-COP3530::CDAL<char> list;
+cop3530::CDAL<char> list;
 
 	SECTION("Test Print of 20 items"){
 		for(int i = 37; i < 57; i++){
@@ -285,15 +285,49 @@ COP3530::CDAL<char> list;
 	}
 }
 
+//***************CDAL Return Pointer***********************
+TEST_CASE("CDAL_TEST Pointer", "[CDAL_PRINT]"){
+cop3530::CDAL<int> list;
+
+	SECTION("Test Print of 20 items"){
+		for(int i = 0; i < 100; i++){
+		list.push_front(i);
+		}
+
+		int * zero = list.return_ptr(0);
+		int * fifty_five = list.return_ptr(55);
+		REQUIRE(*zero == list.peek_front());
+		REQUIRE(*fifty_five == list.item_at(55));
+
+	}
+}
+
+//***************CDAL shift testing***********************
+TEST_CASE("CDAL_TEST SHIFT", "[CDAL_SHIFT]"){
+cop3530::CDAL<int> list;
+
+	SECTION("Test Print of 20 items"){
+		for(int i = 0; i < 100; i++){
+		list.push_front(i);
+		}
+
+		int * zero = list.return_ptr(0);
+		int * fifty_five = list.return_ptr(55);
+		REQUIRE(*zero == list.peek_front());
+		REQUIRE(*fifty_five == list.item_at(55));
+
+	}
+}
+
 // // //*************************ITERATOR TESTING*****************************
 // // TEST_CASE( "Iterating through elements", "[iteration]" ) {
-// // 	COP3530::CDAL<char> l;
+// // 	cop3530::CDAL<char> l;
 // // 	for (int i = 0; i < 60; i++) {
 // // 		l.push_front('X');
 // // 	}
 // // 	SECTION("Iterating through list, testing *, end, begin, = and preincrement operator"){
 // // 		l.push_front('A');
-// // 		COP3530::CDAL<char>::iterator iter = l.begin();
+// // 		cop3530::CDAL<char>::iterator iter = l.begin();
 // // 		REQUIRE(*iter == 'A');
 // // 		int count = 0;
 // // 		while (iter != l.end()) {
@@ -306,20 +340,13 @@ COP3530::CDAL<char> list;
 // // 	SECTION("Non equal and equality operators work, testing postincrement operator"){
 // // 			l.push_front('A');
 // // 			l.push_front('A');
-// // 			COP3530::CDAL<char>::iterator iter = l.begin();
+// // 			cop3530::CDAL<char>::iterator iter = l.begin();
 // // 			iter++;
-// // 			COP3530::CDAL<char>::iterator iter2 = l.begin();
+// // 			cop3530::CDAL<char>::iterator iter2 = l.begin();
 // // 			REQUIRE(iter != iter2);
 // // 			iter2++;
 // // 			REQUIRE(iter == iter2);
 // // 	}
 // // }
-//
-//
-// // TEST_CASE( "CDAL_Testing constructor", "[CDAL_constructor]" ) {
-// // 	COP3530::CDAL<char> l;
-// // 	l.push_front('X');
-// // 	//COP3530::CDAL<char>::iterator iter = l.begin();
-// // 	//COP3530::CDAL<char>::iterator iter2(iter);
-// // 	REQUIRE(*iter2 == 'X');
-// // }
+// //
+// //

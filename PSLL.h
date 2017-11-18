@@ -2,16 +2,16 @@
 /*
 Created by Timothy Botelho on 9/14/17.
 Copyright © 2017 Timothy Botelho. All rights reserved.
-Project 1 COP3530
+Project 1 cop3530
 Instructor Dave Small
 */
 
 #ifndef PSLL_h
 #define PSLL_h
-#include "ADT_List.h"
+#include "List.h"
 using namespace std;
 
-namespace COP3530{
+namespace cop3530{
 //-----------------------PSLL_Iterator Class---------------------
   template <typename T>
   class PSLL_Iterator{
@@ -40,7 +40,7 @@ namespace COP3530{
   };
 
 template<typename T>
-class PSLL:ADT_List<T>{
+class PSLL : public List<T>{
 
 //---------Pool Singly Linked List-------------
 public:
@@ -62,7 +62,7 @@ public:
     bool is_full()override;
     size_t length()override;
     void clear()override;
-    bool contains(T elem,  bool equals_function(T &a, T &b))override;
+    bool contains(T elem,  bool equals_function( const T &a, const T &b))override;
     void print (std::ostream &stream)override;
     T * contents()override;
     void create_pool(int num);
@@ -72,7 +72,7 @@ public:
     void find_tail();
     size_t trim_pool();
     void push_pool(Node<T> * node);
-
+    void clear_pool();
     /*----in-class iterator functions---------------
     functions to allow PSSL_Iterator to function as
     an iterator with in PSLL
@@ -315,7 +315,7 @@ T PSLL<T>::remove(size_t pos){
   }
   else if(length() == 1){
       temp = head->next->data;
-
+      push_pool(head->next);
       clear();
       return temp;
   }
@@ -335,7 +335,8 @@ T PSLL<T>::remove(size_t pos){
       else if(index == pos){
           temp = conductor->data;
           back->next = conductor->next;
-          delete conductor;
+          conductor->next = NULL;
+          push_pool(conductor);
           return temp;
       }
       }//if
@@ -401,6 +402,7 @@ T PSLL<T>::pop_front(){
         back = head->next;      //set back to head->next
         temp = back->data;      //set temp equal to node about to be popped
         conductor = back->next; //conductor = to new head->next
+        back->next = NULL;      //set back->next to Null to cut off reference from list
         push_pool(back);        //push node to pool
         head->next = conductor; //set head = to conductor
         return temp;            //return temp
@@ -490,19 +492,19 @@ size_t PSLL<T>::length(){
 template <typename T>
 size_t PSLL<T>::length_pool(){
 
-Node<T> * conductor = new Node<T>();
+Node<T> * conductor = new Node<T>;
 
-    size_t size=0;
-    if (free_pool->next == 0) {
+    size_t size = 0;
+    if (free_pool->next == NULL) {
         return 0;
     }
-     conductor = free_pool;
+    conductor = free_pool;    //set conductor to free pool head
     while (conductor->next != NULL) {
         conductor = conductor->next;
         size++;
     }
     free_pool_tail->next = conductor;
-    return size-1;
+    return size;
 }
 
 //--------------clear-----------------
@@ -524,9 +526,28 @@ void PSLL<T>::clear(){
   head->next = NULL;
 }
 
+//--------------clear pool-----------------
+template <typename T>
+void PSLL<T>::clear_pool(){
+  Node<T> * conductor = new Node<T>();
+  Node<T>  * back = new Node<T>();
+  //conductor = free_pool;
+  //back->next = conductor;
+
+  //if(pool_is_empty())
+  return;
+
+  //while (conductor->next != NULL) {
+    //  back = conductor;
+    //  conductor = conductor->next;
+      //delete back;
+//  }
+  //free_pool->next = NULL;
+}
+
 //-------------contains-------------
 template <typename T>
-bool PSLL<T>::contains(T elem,  bool equals_function(T &a, T &b)) {
+bool PSLL<T>::contains(T elem,  bool equals_function(const T &a, const T &b)) {
   Node<T> * conductor = new Node<T>();
   conductor = head->next;
   bool equal = false;
@@ -591,7 +612,7 @@ void PSLL<T>::create_pool(int num){
     }//if
 
     int i = 0;
-    while (i < num) {
+    while (i < num-1) {
      Node<T> * temp = new Node<T>();
         conductor = conductor->next;
         conductor->next = temp;
@@ -627,7 +648,7 @@ size_t PSLL<T>::trim_pool(){
     if (length() > 100 && length_pool() >50) {
     int pool_trim = length_pool()-50;
         for(int i =0; i<pool_trim ;i++){
-        
+
             pool_pop_back();
         }
     }
@@ -639,9 +660,20 @@ template <typename T>
 void PSLL<T>::push_pool(Node<T> * node){
     Node<T> * conductor = new Node<T>();
 
-    if(length_pool()>2)
-    conductor = free_pool_tail->next;
-    conductor->next= node;
+    if(pool_is_empty()){         //when pool is empty
+      free_pool->next = node;
+      free_pool_tail->next = node;
+    }
+    else if(length_pool() >= 50){     //delete nodes over 50
+      delete node;
+    }
+    else{
+    conductor = free_pool_tail->next;  //temp is set to tail
+    conductor->next= node;             //temp->next is set to node
+    free_pool_tail->next = node;         //free_pool_tail is set to node
+    node->next = NULL;
+    }
+
 }
 
 }//namespace

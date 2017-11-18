@@ -1,6 +1,6 @@
 //
 //  CDAL.h
-//  ADT_List
+//  List
 //
 //  Created by Timothy Botelho on 9/30/17.
 //  Copyright © 2017 Timothy Botelho. All rights reserved.
@@ -10,50 +10,20 @@
 #ifndef CDAL_h
 #define CDAL_h
 
-#include "ADT_List.h"
+#include "List.h"
 
 using namespace std;
 
-namespace COP3530{
-
-
-//-----------------------CDAL_Iterator Class---------------------
-template <typename T>
-class CDAL_Iterator{
-public:
-  T * iter;
-
-  // type aliases required for C++ iterator compatibility
-  using difference_type = std::ptrdiff_t;
-  using value_type = T;
-  using reference = T&;
-  using pointer = T*;
-  using iterator_category = std::forward_iterator_tag;
-
-public:
-  CDAL_Iterator(T * it):iter(it){}
-  CDAL_Iterator(const CDAL_Iterator& c_iter):iter(c_iter.iter){}
-  CDAL_Iterator& operator=(CDAL_Iterator it){ std::swap(iter, it.p); return *this;}
-  CDAL_Iterator&  operator++() {  iter = iter + 1; return *this;}
-  CDAL_Iterator operator++(int) { CDAL_Iterator it(*this); iter = iter + 1; return it;}
-  bool operator==(const CDAL_Iterator& it) { return iter == it.iter; }
-  bool operator!=(const CDAL_Iterator& it) { return iter != it.iter; }
-  const T& operator*() const {CDAL_Iterator it(*this); return *(it.iter); }
-  //PSLL_Iterator& operator-(const difference_type& movement){PSLL_Iterator oldPtr = iter; iter-=movement;PSLL_Iterator temp(*this);iter = oldPtr;return temp;}
-  //difference_type operator-(const PSLL_Iterator& rawIterator){return std::distance(rawIterator.iter,iter);}
-
-};
-
+namespace cop3530{
 
 template<typename T>
-class CDAL:ADT_List<T>{
+class CDAL: public List<T>{
 
     //---------Chainded Dynamic Array List-------------
 public:
     //function declerations
     CDAL();
     ~CDAL() override;
-    friend class CDAL_Iterator<T>;
     void insert(T elem, size_t pos) override;
     void push_back(T elem) override;
     void push_front(T elem)override;
@@ -68,7 +38,7 @@ public:
     bool is_full()override;
     size_t length()override;
     void clear()override;
-    bool contains(T elem,  bool equals_function(T &a, T &b))override;
+    bool contains(T elem, bool equals_function(const T &a,const T &b))override;
     void print (std::ostream &stream)override;
     T * contents()override;
 
@@ -96,6 +66,14 @@ public:
     void test_shift();
     void print_node_status(Node<T> * node);
 
+    /******* return_ptr(size_t index)
+    Returns the address of an item at the index
+    inorder to be able to create an iterator
+    */
+    T * return_ptr(size_t index);
+    int return_index(T * address);
+    T * create_arr_address();
+
     //member variables
     Node<T> * head;
     Node<T> * tail;
@@ -111,7 +89,6 @@ CDAL<T>::CDAL(){head = new(Node<T>),tail = new(Node<T>);
     T* first_arr = new T[50];
     head->next->ptr = first_arr;
     head->next->cur_arr_size = 0;
-
 }
 
 //---------destructor-----------------
@@ -129,9 +106,14 @@ void CDAL<T>::insert(T elem, size_t pos){
         throw std::runtime_error("Out of Bounds");
     }
 
+      //find the address of array where elem is to be placed
       T * ptr2 = find_cur_node(pos)->ptr;
+      //set ptr2 to address of index where item is to be placed
       ptr2 = ptr2 + (pos%50);
+
+      //shift all the items right
       shift_all_right(pos);
+      //insert element
       *ptr2 = elem;
 
 }
@@ -182,7 +164,9 @@ void CDAL<T>::push_back(T elem){
 template<typename T>
 void CDAL<T>::push_front(T elem){
 
-    T * ptr2 =head->next->ptr;
+    //set a pointer to first item in first node
+    T * ptr2 = head->next->ptr;
+
 
     if (head->next->is_empty) {
         *ptr2 =elem;
@@ -191,8 +175,8 @@ void CDAL<T>::push_front(T elem){
     }
 
     else{
-        shift_all_right();
-        *ptr2 =elem;
+        shift_all_right(0);
+        *ptr2 = elem;
     }
 }
 
@@ -237,14 +221,23 @@ T CDAL<T>::remove(size_t pos){
 //---------------pop_back------------
 template<typename T>
 T CDAL<T>::pop_back(){
+
     //find node of back
     Node<T> * temp = new Node<T>;
     if (is_empty()) {
         throw std::runtime_error("list is empty");
     }
-    temp = find_cur_node(length());
-    T back = *(temp->ptr + temp->cur_arr_size-1);
+    //find the last node
+
+    temp = find_cur_node(length()-1);
+
+    T back = *(temp->ptr + (temp->cur_arr_size-1));
     temp->cur_arr_size--;
+    // if(temp->cur_arr_size < 50)
+    //   temp->is_full = false;
+    // if(temp->cur_arr_size == 0)
+    //   temp->is_empty = true;
+
     return back;
 }
 
@@ -262,6 +255,8 @@ T CDAL<T>::item_at(size_t pos){
     Node<T> * temp = new Node<T>;
     T * ptr2 = head->next->ptr;
 
+    if(pos > length())
+      throw std::runtime_error("You fucked up homey");
     if(pos<50)
     {
         ptr2 += pos;
@@ -355,14 +350,14 @@ void CDAL<T>::clear(){
     head->next->is_full = false;
     head->next->cur_arr_size = 0;
     T * temp = head->next->ptr;
-    for (int i= 50; i>=0 ; i--) {
+    for (int i= 49; i>=0 ; i--) {
         *(temp + i) = -1;
     }
 }
 
 //-------------contains-------------
 template <typename T>
-bool CDAL<T>::contains(T elem,  bool equals_function(T &a, T &b)) {
+bool CDAL<T>::contains(T elem,  bool equals_function(const T &a,const T &b)) {
   //Start at the beginning of the list
   //work through list checking every item
   T temp;
@@ -497,30 +492,75 @@ void CDAL<T>::first_to_last(Node<T> * curr){
 
 template<typename T>
 void CDAL<T>::shift_arr_right(Node<T> * curr){
-    int size = curr->cur_arr_size - 1;
+    //set size to how many items in array
+    int size = curr->cur_arr_size;
+    T * ptr =  curr->ptr;
+    T * ptr1 =  curr->ptr;
     T * ptr2 = curr->ptr;
     T * ptr3 = curr->ptr;
-    for (int i = size; i>= 0; i--) {
 
-        ptr2 += i;
-        ptr3 += i + 1;
-        *ptr3 = *ptr2;
-        ptr2 = ptr3 = curr->ptr;
+
+    //when only one item
+    if(curr->cur_arr_size == 1)
+    {
+      ptr3 = ptr3 + 1;
+      *ptr3 = *ptr2;
+
+      return;
+    }
+    //removes possibitiy of overflow
+    else if( curr->cur_arr_size == 50)
+    {
+      for (int i = size-1; i > 0; i--){
+        ptr1 = ptr + i;
+        ptr2 = ptr + (i - 1);
+        *ptr1 = *ptr2;
+
+      }
+    }
+    else{
+      for (int i = size; i > 0; i--){
+        ptr1 = ptr + i;
+        ptr2 = ptr + (i - 1);
+        *ptr1 = *ptr2;
+
+      }
     }
 }
 
+
 template<typename T>
 void CDAL<T>::shift_arr_right(Node<T> * curr,int pos){
-    int size = curr->cur_arr_size - 1;
+    int size = curr->cur_arr_size;
+    T * ptr = curr->ptr;
+    T * ptr1 = curr->ptr;
     T * ptr2 = curr->ptr;
     T * ptr3 = curr->ptr;
-    for (int i = size; i>= pos - 1; i--) {
 
-        ptr2 += i;
-        ptr3 += i + 1;
-        *ptr3 = *ptr2;
-        ptr2 = ptr3 = curr->ptr;
+    //when only one item
+    if(curr->cur_arr_size == 1)
+    {
+      ptr3 = ptr3 + 1;
+      *ptr3 = *ptr2;
+      return;
     }
+    //removes possibitiy of overflow
+    else if( curr->cur_arr_size == 50)
+    {
+      for (int i = size-1; i > pos; i--){
+        ptr1 = ptr + i;
+        ptr2 = ptr + (i - 1);
+        *ptr1 = *ptr2;
+      }
+    }
+    else{
+    for (int i = size; i > pos; i--) {
+
+      ptr1 = ptr + i;
+      ptr2 = ptr + (i - 1);
+      *ptr1 = *ptr2;
+    }
+  }
 }
 
 template<typename T>
@@ -748,11 +788,7 @@ void CDAL<T>::test_shift()
     {
         cout << pop_front() << endl;
     }
-
-
     print_all_nodes();
-
-
 }
 
 //-------------Last node used------------------
@@ -1294,5 +1330,36 @@ void CDAL<T>::print_all_nodes(){
     //print_cur_node(back);
     }
 }
+template<typename T>
+T * CDAL<T>::return_ptr(size_t index){
+  T * address;                                            //temp to hold the address
+  Node<T> * temp = new Node<T>;                            //find which node the index is in
+  temp = find_cur_node(index);
+  address = temp->ptr + (index%50);                       //find the address of the first item in array
+                                                          // Then add the index mod 50 to find the relative index
+  return address;
 }
+
+template<typename T>
+int CDAL<T>::return_index(T * address){
+
+  T * t_ptr;                             //temp to hold the address
+  for(int i = 0; i < length(); i++){      //go through list searching for address
+      t_ptr = return_ptr(i);
+      if(t_ptr == address)
+      return i;
+  }
+  return -1;
+}
+
+template<typename T>
+T * CDAL<T>::create_arr_address(){
+  T ** arr = new T[length()];
+  for(int i = 0; i < length(); i++)
+  {
+    arr[i] = return_ptr(i);
+  }
+}
+
+}//namespace
 #endif /* CDAL_h */

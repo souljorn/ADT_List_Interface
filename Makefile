@@ -1,10 +1,13 @@
+
 #project 1 make file
 #Tim Botelho
 
-list.o: Main_Test.o TestPSLL.o TestSSLL.o TestSDAL.o TestCDAL.o
-	g++ -std=c++14 Main_Test.o TestSSLL.o TestPSLL.o TestSDAL.o TestCDAL.o -o tests && ./tests -r console
+#list.o: Main_Test.o TestPSLL.o TestSSLL.o TestSDAL.o TestCDAL.o
+#       g++ -std=c++14 Main_Test.o TestPSLL.o TestSSLL.o TestSDAL.o TestCDAL.o -o tests
 
-Main_Test.o: Main_Test.cpp ADT_List.h CDAL.h PSLL.h SDAL.h SSLL.h test.h
+list.o: SSLL_TEST.o PSLL_TEST.o SDAL_TEST.o CDAL_TEST.o
+
+Main_Test.o: Main_Test.cpp List.h CDAL.h PSLL.h SDAL.h SSLL.h test.h
 	g++ -c -std=c++14 Main_Test.cpp
 
 TestSSLL.o: TestSSLL.cpp SSLL.h
@@ -19,6 +22,24 @@ TestSDAL.o: TestSDAL.cpp SDAL.h
 TestCDAL.o: TestCDAL.cpp CDAL.h
 	g++ -c -std=c++14 TestCDAL.cpp
 
+SSLL_TEST.o: Main_Test.o TestSSLL.o
+	g++ -std=c++14 Main_Test.o TestSSLL.o -o test1
+
+PSLL_TEST.o: Main_Test.o TestPSLL.o
+	g++ -std=c++14 Main_Test.o TestPSLL.o -o test2
+
+SDAL_TEST.o: Main_Test.o TestSDAL.o
+	g++ -std=c++14 Main_Test.o TestSDAL.o -o test3
+
+CDAL_TEST.o: Main_Test.o TestCDAL.o
+	g++ -std=c++14 Main_Test.o TestCDAL.o -o test4
+
+run_tests:
+	./test1
+	./test2
+	./test3
+	./test4
+
 clean:
 	find . -name "*.o" -type f
-	rm *.o tests *.h.gch
+	rm *.o test1 test2 test3 test4
