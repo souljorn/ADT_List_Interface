@@ -1,54 +1,86 @@
 #include "Catch.hpp"
-#include "SDAL.h"
+#include "CBL.h"
 #include <stdexcept>
 
-//***********************SDAL TESTING***********************************
-//by Timothy Botelho
-
-//***********************Constructor**********************************
-TEST_CASE( "SDAL_Testing constructor", "[SDAL_constructor]" ) {
-	cop3530::SDAL<char> l;
-	l.push_front('X');
-	cop3530::SDAL<char>::iterator iter = l.begin();
-	cop3530::SDAL<char>::iterator iter2(iter);
-	REQUIRE(*iter2 == 'X');
-}
+// //***********************CBL TESTING***********************************
+// //by Timothy Botelho
+//
+// //***********************Constructor**********************************
+// TEST_CASE( "CBL_Testing constructor", "[CBL_constructor]" ) {
+// 	cop3530::CBL<char> l;
+// 	l.push_front('X');
+// 	cop3530::CBL<char>::iterator iter = l.begin();
+// 	cop3530::CBL<char>::iterator iter2(iter);
+// 	REQUIRE(*iter2 == 'X');
+// }
 //************************INSERT****************************************
-TEST_CASE("SDAL_Test insert", "[SDAL_insert]"){
-	cop3530::SDAL<char> l;
-	for (int i = 0; i < 60; i++) {
-		l.push_front('X');
-	}
+TEST_CASE("CBL_Test insert", "[CBL_insert]"){
+  cop3530::CBL<char> l;
+  for (int i = 0; i < 10; i++) {
+    l.push_front('X');
+  }
 
   SECTION("Testing length "){
+    REQUIRE(l.length() == 10);
+  }
+
+  SECTION("Inserting out of bounds"){bool caught = false;
+    bool error;
+    try {
+      l.insert('A',61);
+    } catch (std::runtime_error &le) {
+      error = true;
+    }
+    REQUIRE(error == true);
+  }
+
+  SECTION("Inserting at pos 0"){
+    l.insert('B',0);
+    REQUIRE(l.peek_front() == 'B');
+    REQUIRE(l.item_at(0) == 'B');
+  }
+
+  SECTION("Inserting at pos 2"){
+    l.insert('A',2);
+
+    REQUIRE(l.item_at(2) == 'A');
+  }
+}
+
+//************************INSERT with larger numbers****************************************
+TEST_CASE("CBL_Test insert2", "[CBL_insert2]"){
+  cop3530::CBL<int> l;
+  for (int i = 0; i < 60; i++) {
+    l.push_front(i);
+  }
+
+  SECTION("Testing head and tail"){
+    REQUIRE(l.peek_front() == 59);
+    REQUIRE(l.peek_back() == 0);
     REQUIRE(l.length() == 60);
   }
 
-	SECTION("Inserting out of bounds"){bool caught = false;
-			bool error;
-			try {
-	 			l.insert('A',61);
-			} catch (std::runtime_error &le) {
- 				error = true;
-	 		}
-	 		REQUIRE(error == true);
-	}
+  SECTION("testing inserting at front and back"){
 
-	SECTION("Inserting at pos 0"){
-		l.insert('B',0);
-	REQUIRE(l.peek_front() == 'B');
-  REQUIRE(l.item_at(0) == 'B');
-	}
+    l.insert(77, 0);
+    l.insert(66, l.length()-1);
 
-	SECTION("Inserting at pos 2"){
-		l.insert('A',2);
-	REQUIRE(l.item_at(2) == 'A');
-	}
+    REQUIRE(l.length() == 62);
+    REQUIRE(l.peek_front() == 77);
+    REQUIRE(l.peek_back() == 66);
+  }
+
+  SECTION("Inserting in middle using shift"){
+    l.insert(99,4);
+    //l.print(cout);
+    REQUIRE(l.length() == 61);
+    REQUIRE(l.item_at(4) == 99);
+  }
 }
 
 //************************PUSH FRONT TESTING*********************************
-TEST_CASE("SDAL_Test push_front", "[SDAL_push_front]"){
-	cop3530::SDAL<int> list;
+TEST_CASE("CBL_Test push_front", "[CBL_push_front]"){
+	cop3530::CBL<int> list;
 
 	SECTION("Push Front When Empty"){
 			list.push_front(77);
@@ -65,8 +97,8 @@ TEST_CASE("SDAL_Test push_front", "[SDAL_push_front]"){
 }
 
 //***********************TEST LENGTH******************************************
-TEST_CASE("SDAL_Test length", "[SDAL_length]"){
-	cop3530::SDAL<int> list;
+TEST_CASE("CBL_Test length", "[CBL_length]"){
+	cop3530::CBL<int> list;
 	list.clear();
 
 	SECTION("Length when empty"){
@@ -84,8 +116,8 @@ TEST_CASE("SDAL_Test length", "[SDAL_length]"){
 }
 
 //***********************TEST CLEAR******************************************
-TEST_CASE("SDAL_Test Clear", "[SDAL_length]"){
-	cop3530::SDAL<int> list;
+TEST_CASE("CBL_Test Clear", "[CBL_length]"){
+	cop3530::CBL<int> list;
 	for(int i = 0 ; i < 5; i++)
 	{
 		list.push_front(i);
@@ -99,8 +131,8 @@ TEST_CASE("SDAL_Test Clear", "[SDAL_length]"){
 }
 
 // //***********************TEST PUSH BACK******************************************
-TEST_CASE("SDAL_Test PUSH BACK", "[SDAL_push_back]"){
-	cop3530::SDAL<int> list;
+TEST_CASE("CBL_Test PUSH BACK", "[CBL_push_back]"){
+	cop3530::CBL<int> list;
 
 	SECTION("When Empty"){
 			list.push_back(7);
@@ -120,8 +152,8 @@ TEST_CASE("SDAL_Test PUSH BACK", "[SDAL_push_back]"){
 }
 
 //***********************TEST REPLACE******************************************
-TEST_CASE("SDAL_Test REPLACE", "[SDAL_replace]"){
-	cop3530::SDAL<int> list;
+TEST_CASE("CBL_Test REPLACE", "[CBL_replace]"){
+	cop3530::CBL<int> list;
 
 	SECTION("Replacing item when list is empty"){
 		bool caught = false;
@@ -160,8 +192,8 @@ TEST_CASE("SDAL_Test REPLACE", "[SDAL_replace]"){
 }
 
 //********************REMOVE*****************************
-TEST_CASE("SDAL_TEST REMOVE", "[SDAL_REMOVE]"){
-		cop3530::SDAL<int> list;
+TEST_CASE("CBL_TEST REMOVE", "[CBL_REMOVE]"){
+		cop3530::CBL<int> list;
 
 	SECTION("Remove an item from an empty list"){
 		list.clear();
@@ -211,17 +243,35 @@ TEST_CASE("SDAL_TEST REMOVE", "[SDAL_REMOVE]"){
 			int before = list.item_at(50);
 			int after = list.item_at(51);
 			int item = list.remove(50);
+      //list.print(cout);
       REQUIRE(item == 50);
       REQUIRE(before == 50);
       REQUIRE(after == 51);
 			REQUIRE(list.item_at(50) == after);
 			REQUIRE(list.length() == 79);
 		}
+
+    SECTION("Remove an item from 76th position"){
+			list.clear();
+			for(int i = 0 ; i < 80; i++)
+			{
+				list.push_back(i);
+			}
+			int before = list.item_at(75);
+			int after = list.item_at(77);
+			int item = list.remove(76);
+      //list.print(cout);
+      REQUIRE(item == 76);
+      REQUIRE(before == 75);
+      REQUIRE(after == 77);
+			REQUIRE(list.item_at(76) == after);
+			REQUIRE(list.length() == 79);
+		}
 }
 
 //*********************POP_BACK********************
-TEST_CASE("SDAL_TEST POP_BACK", "[SDAL_pop_back]"){
-		cop3530::SDAL<int> list;
+TEST_CASE("CBL_TEST POP_BACK", "[CBL_pop_back]"){
+		cop3530::CBL<int> list;
 
 		SECTION("POP_BACK when list is empty"){
 			bool error = false;
@@ -254,57 +304,20 @@ bool equals_function(T &a, T &b){
 	return false;
 }
 
-//***************SDAL CONTAINS************************
-TEST_CASE("SDAL_TEST CONTAINS", "[SDAL_CONTAINS]"){
-cop3530::SDAL<char> list;
+//***************CBL CONTAINS************************
+TEST_CASE("CBL_TEST CONTAINS", "[CBL_CONTAINS]"){
+cop3530::CBL<char> list;
 
-	SECTION("Testing Contains finds A"){
+	SECTION("Testing Contains A"){
 		list.push_front('A');
+    //cout << list.peek_front() << endl;
 		REQUIRE(list.contains('A',equals_function) == true);
 	}
 }
 
-//*************************ITERATOR TESTING*****************************
-TEST_CASE( "SDAL_Iterator TESTING", "[iteration]" ) {
-	cop3530::SDAL<char> l;
-	for (int i = 0; i < 60; i++) {
-		l.push_front('X');
-	}
-	SECTION("Iterating through list, testing *, end, begin, = and preincrement operator"){
-		l.push_front('A');
-		cop3530::SDAL<char>::iterator iter = l.begin();
-		REQUIRE(*iter == 'A');
-		int count = 0;
-		while (iter != l.end()) {
-			++count;
-			++iter;
-		}
-		REQUIRE(count == 61);
-	}
-
-	SECTION("Non equal and equality operators work, testing postincrement operator"){
-			l.push_front('A');
-			l.push_front('A');
-			cop3530::SDAL<char>::iterator iter = l.begin();
-			iter++;
-			cop3530::SDAL<char>::iterator iter2 = l.begin();
-			REQUIRE(iter != iter2);
-			iter2++;
-			REQUIRE(iter == iter2);
-	}
-	SECTION("Range based for loop"){
-		int size = 0;
-		for(auto it = l.begin(); it != l.end(); ++it)
-		{
-			size++;
-		}
-		REQUIRE(size == 60);
-	}
-}
-
 //***************************Test Contents********************
-TEST_CASE("SDAL_TEST CONTENTS", "[SDAL_CONTENTS]"){
-cop3530::SDAL<char> list;
+TEST_CASE("CBL_TEST CONTENTS", "[CBL_CONTENTS]"){
+cop3530::CBL<char> list;
 
   SECTION("Testing Contents to Array"){
     list.push_front('D');
@@ -338,3 +351,43 @@ cop3530::SDAL<char> list;
     REQUIRE(list.item_at(0) == 'S');
   }
 }
+
+
+
+// //*************************ITERATOR TESTING*****************************
+// TEST_CASE( "CBL_Iterator TESTING", "[iteration]" ) {
+// 	cop3530::CBL<char> l;
+// 	for (int i = 0; i < 60; i++) {
+// 		l.push_front('X');
+// 	}
+// 	SECTION("Iterating through list, testing *, end, begin, = and preincrement operator"){
+// 		l.push_front('A');
+// 		cop3530::CBL<char>::iterator iter = l.begin();
+// 		REQUIRE(*iter == 'A');
+// 		int count = 0;
+// 		while (iter != l.end()) {
+// 			++count;
+// 			++iter;
+// 		}
+// 		REQUIRE(count == 61);
+// 	}
+//
+// 	SECTION("Non equal and equality operators work, testing postincrement operator"){
+// 			l.push_front('A');
+// 			l.push_front('A');
+// 			cop3530::CBL<char>::iterator iter = l.begin();
+// 			iter++;
+// 			cop3530::CBL<char>::iterator iter2 = l.begin();
+// 			REQUIRE(iter != iter2);
+// 			iter2++;
+// 			REQUIRE(iter == iter2);
+// 	}
+// 	SECTION("Range based for loop"){
+// 		int size = 0;
+// 		for(auto it = l.begin(); it != l.end(); ++it)
+// 		{
+// 			size++;
+// 		}
+// 		REQUIRE(size == 60);
+// 	}
+// }

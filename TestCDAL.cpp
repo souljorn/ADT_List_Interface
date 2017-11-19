@@ -318,7 +318,42 @@ cop3530::CDAL<int> list;
 
 	}
 }
+//***************************Test Contents********************
+TEST_CASE("CDAL_TEST CONTENTS", "[CDAL_CONTENTS]"){
+cop3530::CDAL<char> list;
 
+  SECTION("Testing Contents to Array"){
+    list.push_front('D');
+    list.push_front('A');
+    list.push_front('T');
+    list.push_front('A');
+    list.push_front('S');
+    list.push_front('T');
+    list.push_front('R');
+    list.push_front('U');
+    list.push_front('C');
+    list.push_front('T');
+    list.push_front('U');
+    list.push_front('R');
+    list.push_front('E');
+    list.push_front('S');
+
+    REQUIRE(list.item_at(13) == 'D');
+    REQUIRE(list.item_at(12) == 'A');
+    REQUIRE(list.item_at(11) == 'T');
+    REQUIRE(list.item_at(10) == 'A');
+    REQUIRE(list.item_at(9) == 'S');
+    REQUIRE(list.item_at(8) == 'T');
+    REQUIRE(list.item_at(7) == 'R');
+    REQUIRE(list.item_at(6) == 'U');
+    REQUIRE(list.item_at(5) == 'C');
+    REQUIRE(list.item_at(4) == 'T');
+    REQUIRE(list.item_at(3) == 'U');
+    REQUIRE(list.item_at(2) == 'R');
+    REQUIRE(list.item_at(1) == 'E');
+    REQUIRE(list.item_at(0) == 'S');
+  }
+}
 // // //*************************ITERATOR TESTING*****************************
 // // TEST_CASE( "Iterating through elements", "[iteration]" ) {
 // // 	cop3530::CDAL<char> l;
